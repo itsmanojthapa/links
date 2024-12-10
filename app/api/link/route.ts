@@ -12,6 +12,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const shortUrl = shortid.generate();
 
     const isExists = await Url.findOne({ longUrl });
+
     if (isExists) {
       return NextResponse.json({ shortUrl: isExists.shortUrl });
     }

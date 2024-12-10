@@ -21,7 +21,9 @@ export default function Home() {
 
       console.log(res.data.message);
 
-      setShortUrl(`/api/${res.data.shortUrl}`);
+      setShortUrl(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/short/${res.data.shortUrl}`
+      );
       setError("");
     } catch (err) {
       console.log(err);
