@@ -13,7 +13,7 @@ export default async function Page({ params }: PageProps) {
   let res;
 
   try {
-    res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${slug}`, {
+    res = await axios.post(`/api/${slug}`, {
       shortUrl: slug,
     });
   } catch (error: unknown) {
