@@ -1,48 +1,61 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 
 import axios from "axios";
 import Form from "next/form";
+import { useFormStatus } from "react-dom";
+import Image from "next/image";
 
 export default function Home() {
   const [longUrl, setLongUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const handleSubmit = async (formData: FormData) => {
-    try {
-      setLoading(true);
-      const res = await axios.post("/api/link", {
-        longUrl: formData.get("url"),
-      });
-      console.log("res ->");
+    startTransition(async () => {
+      try {
+        // setLoading(true);
+        const res = await axios.post("/api/link", {
+          longUrl: formData.get("url"),
+        });
+        console.log("res ->");
 
-      console.log(res.data.message);
+        console.log(res.data.message);
 
-      setShortUrl(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/short/${res.data.shortUrl}`
-      );
-      setError("");
-    } catch (err) {
-      console.log(err);
-      setError("Something went wrong");
-    } finally {
-      setLoading(false);
-    }
+        setShortUrl(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/short/${res.data.shortUrl}`
+        );
+        setError("");
+      } catch (err) {
+        console.log(err);
+        setError("Something went wrong");
+      } finally {
+        // setLoading(false);
+      }
+    });
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
+    <div className="min-h-screen  py-6 flex flex-col justify-center  font-mono sm:py-12 text-zinc-50">
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
-        <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
+        <div className="relative px-4 py-10 shadow-lg sm:rounded-3xl sm:p-20">
           <div className="max-w-md mx-auto">
             <div className="divide-y divide-gray-200">
-              <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
-                <h1 className="text-2xl font-bold mb-8 text-center">
-                  URL Shortener
-                </h1>
+              <div className="py-8 text-base leading-6 space-y-4  sm:text-lg sm:leading-7">
+                <div className="flex items-center mb-8">
+                  <Image
+                    src={"/favicon.ico"}
+                    width={50}
+                    height={50}
+                    alt="icon"
+                  />
+                  <h1 className="text-2xl font-bold text-center flex-1 ">
+                    URL Shortener
+                  </h1>
+                </div>
                 <Form action={handleSubmit} className="space-y-4">
                   <input
                     type="url"
@@ -51,16 +64,16 @@ export default function Home() {
                     onChange={(e) => setLongUrl(e.target.value)}
                     placeholder="Enter your URL"
                     required
-                    className="w-full px-3 py-2 border rounded-md"
+                    className="w-full px-3 py-2 border rounded-md text-black"
                   />
-                  {loading ? (
-                    <button className="w-full bg-blue-900 text-white py-2 px-4 rounded-md hover:bg-blue-900">
+                  {isPending ? (
+                    <button className="w-full bg-yellow-900  py-2 px-4 rounded-md hover:bg-yellow-900">
                       Shortening...
                     </button>
                   ) : (
                     <button
                       type="submit"
-                      className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
+                      className="w-full bg-yellow-500 py-2 px-4 rounded-md hover:bg-yellow-600">
                       Shorten URL
                     </button>
                   )}
