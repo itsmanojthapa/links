@@ -4,7 +4,6 @@ import React, { useState, useTransition } from "react";
 
 import axios from "axios";
 import Form from "next/form";
-import { useFormStatus } from "react-dom";
 import Image from "next/image";
 
 export default function Home() {
